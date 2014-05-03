@@ -1,0 +1,9 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+
+# PyCharm workspace
+.idea/
+
+# Sphinx build
+docs/build/
