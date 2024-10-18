@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 # Flask-SignedCookies documentation build configuration file, created by
 # sphinx-quickstart on Thu Mar 20 18:51:03 2014.
 #

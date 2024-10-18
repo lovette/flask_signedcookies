@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from flask.sessions import SessionInterface, total_seconds
 from itsdangerous import BadSignature
 import datetime
