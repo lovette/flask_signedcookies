@@ -1,0 +1,25 @@
+name: Release
+
+on:
+  # Allow triggering manually from GitHub UI.
+  # Note: This apparently doesn't work for making releases because
+  # the tag isn't available to the action.
+  # workflow_dispatch:
+
+  push:
+    # Run workflow if commit is tagged with a semantic version number.
+    # Applies to all branches.
+    tags:
+      - "v[0-9]+"
+      - "v[0-9]+.[0-9]+"
+      - "v[0-9]+.[0-9]+.[0-9]+"
+      - "v[0-9]+.[0-9]+.[0-9]+-*"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Release
+        uses: softprops/action-gh-release@v2
