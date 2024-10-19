@@ -13,7 +13,7 @@ class SignedCookies(object):
     def __init__(self):
         """Constructor.
         """
-        super(SignedCookies, self).__init__()
+        super().__init__()
 
         self._app = None
         self._session_interface = None
