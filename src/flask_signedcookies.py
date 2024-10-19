@@ -1,7 +1,8 @@
-from flask.sessions import SessionInterface, total_seconds
-from itsdangerous import BadSignature
 import datetime
 import hashlib
+
+from flask.sessions import SessionInterface, total_seconds
+from itsdangerous import BadSignature
 
 
 class SignedCookies:
