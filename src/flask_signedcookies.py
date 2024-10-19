@@ -4,7 +4,7 @@ import datetime
 import hashlib
 
 
-class SignedCookies(object):
+class SignedCookies:
     """Flask extension to provide easy access to signed cookies."""
 
     name_hash_method = staticmethod(hashlib.md5)
