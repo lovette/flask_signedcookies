@@ -25,8 +25,7 @@ class SignedCookies:
     """Hash method to encode cookie names. Default is md5. Set to None to disable."""
 
     def __init__(self) -> None:
-        """Constructor.
-        """
+        """Constructor."""
         super().__init__()
 
         self._app = None
@@ -80,6 +79,9 @@ class SignedCookies:
 
         Arguments:
             response (flask.Response): Response instance
+
+        Returns:
+            Response
         """
         # Set signed cookies
         for cookie_name, cookie in self._set_signed_cookies.iteritems():
@@ -149,6 +151,7 @@ class SignedCookies:
             unsigned_val (mixed): Value of cookie.
 
         Keyword Arguments:
+            max_age (int, optional): Cookie TTL in seconds. Default is no expiration.
             path (string, optional): Limit cookie to a given path. Default is '/'.
                 Specify None to use value of app config variable ``SESSION_COOKIE_PATH`` or ``APPLICATION_ROOT``.
             domain (string, optional): Specify if you want to set a cross-domain cookie.
@@ -190,31 +193,52 @@ class SignedCookies:
 
     def get_cookie_path(self) -> str:
         """Return default cookie ``path``.
+
+        Returns:
+            str
         """
         return self._session_interface.get_cookie_path(self._app)
 
     def get_cookie_domain(self) -> str | None:
         """Return default cookie ``domain``.
+
+        Returns:
+            str | None
         """
         return self._session_interface.get_cookie_domain(self._app)
 
     def get_cookie_httponly(self) -> bool:
         """Return default cookie ``httponly`` setting.
+
+        Returns:
+            bool
         """
         return self._session_interface.get_cookie_httponly(self._app)
 
     def get_cookie_secure(self) -> bool:
         """Return default cookie ``secure`` setting.
+
+        Returns:
+            bool
         """
         return self._session_interface.get_cookie_secure(self._app)
 
     def get_signing_serializer(self) -> Serializer:
         """Return default signing serializer.
+
+        Returns:
+            Serializer
         """
         return self._session_interface.get_signing_serializer(self._app)
 
     def _hash_name(self, name: str) -> str:
         """Hash cookie name with ``name_hash_method``.
+
+        Args:
+            name (str): Name to hash.
+
+        Returns:
+            str
         """
         if self.name_hash_method is not None:
             return self.name_hash_method(self._session_interface.salt + name).hexdigest()
