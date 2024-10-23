@@ -136,7 +136,7 @@ class SignedCookies:
 
         return self._get_signed_cookies[cookie_name]
 
-    def set_cookie(
+    def set_cookie(  # noqa: PLR0913
         self,
         cookie_name: str,
         unsigned_val: str,
