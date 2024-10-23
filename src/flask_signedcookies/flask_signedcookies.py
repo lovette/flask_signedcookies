@@ -4,11 +4,18 @@ This module provides:
 - SignedCookies
 """
 
+from __future__ import annotations
+
 import datetime
 import hashlib
+from typing import TYPE_CHECKING
 
 from flask.sessions import SessionInterface, total_seconds
 from itsdangerous import BadSignature
+
+if TYPE_CHECKING:
+    from flask import Flask, Request, Response
+    from itsdangerous.url_safe import Serializer
 
 
 class SignedCookies:
@@ -17,7 +24,7 @@ class SignedCookies:
     name_hash_method = staticmethod(hashlib.md5)
     """Hash method to encode cookie names. Default is md5. Set to None to disable."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Constructor.
         """
         super().__init__()
@@ -28,7 +35,7 @@ class SignedCookies:
         self._set_signed_cookies = {}
         self._del_signed_cookies = {}
 
-    def init_app(self, app, session_interface=None, register_funcs=True):
+    def init_app(self, app: Flask, session_interface: SessionInterface | None = None, register_funcs: bool = True) -> None:
         """Initialize extension and application instance.
 
         Arguments:
@@ -57,7 +64,7 @@ class SignedCookies:
             app.set_cookie = self.set_cookie
             app.delete_cookie = self.delete_cookie
 
-    def reset_cookies(self):
+    def reset_cookies(self) -> None:
         """Reset signed cookies.
 
         This occurs by default during request initialization.
@@ -66,7 +73,7 @@ class SignedCookies:
         self._set_signed_cookies = {}
         self._del_signed_cookies = {}
 
-    def save_cookies(self, response):
+    def save_cookies(self, response: Response) -> Response:
         """Add set-cookie headers for signed cookies.
 
         This occurs by default after the request is complete.
@@ -95,7 +102,7 @@ class SignedCookies:
 
         return response
 
-    def get_cookie(self, request, cookie_name, max_age=None):
+    def get_cookie(self, request: Request, cookie_name: str, max_age: int | None = None) -> str:
         """Get value of a signed cookie.
 
         Arguments:
@@ -124,7 +131,16 @@ class SignedCookies:
 
         return self._get_signed_cookies[cookie_name]
 
-    def set_cookie(self, cookie_name, unsigned_val, max_age=None, path='/', domain=None, secure=None, httponly=None):
+    def set_cookie(
+        self,
+        cookie_name: str,
+        unsigned_val: str,
+        max_age: int | None = None,
+        path: str = "/",
+        domain: str | None = None,
+        secure: bool | None = None,
+        httponly: bool | None = None,
+    ) -> None:
         """Set value of a signed cookie.
 
         Arguments:
@@ -152,7 +168,7 @@ class SignedCookies:
             'secure': self.get_cookie_secure() if secure is None else secure,
             }
 
-    def delete_cookie(self, cookie_name, path='/', domain=None):
+    def delete_cookie(self, cookie_name: str, path: str = "/", domain: str | None = None) -> None:
         """Delete a signed cookie.
 
         Arguments:
@@ -171,32 +187,32 @@ class SignedCookies:
             'domain': self.get_cookie_domain() if domain is None else domain,
             }
 
-    def get_cookie_path(self):
+    def get_cookie_path(self) -> str:
         """Return default cookie ``path``.
         """
         return self._session_interface.get_cookie_path(self._app)
 
-    def get_cookie_domain(self):
+    def get_cookie_domain(self) -> str | None:
         """Return default cookie ``domain``.
         """
         return self._session_interface.get_cookie_domain(self._app)
 
-    def get_cookie_httponly(self):
+    def get_cookie_httponly(self) -> bool:
         """Return default cookie ``httponly`` setting.
         """
         return self._session_interface.get_cookie_httponly(self._app)
 
-    def get_cookie_secure(self):
+    def get_cookie_secure(self) -> bool:
         """Return default cookie ``secure`` setting.
         """
         return self._session_interface.get_cookie_secure(self._app)
 
-    def get_signing_serializer(self):
+    def get_signing_serializer(self) -> Serializer:
         """Return default signing serializer.
         """
         return self._session_interface.get_signing_serializer(self._app)
 
-    def _hash_name(self, name):
+    def _hash_name(self, name: str) -> str:
         """Hash cookie name with ``name_hash_method``.
         """
         if self.name_hash_method is not None:

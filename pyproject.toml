@@ -55,6 +55,10 @@ select = [
 ]
 
 ignore = [
+  "ANN002", # https://docs.astral.sh/ruff/rules/missing-type-args/
+  "ANN003", # https://docs.astral.sh/ruff/rules/missing-type-kwargs/
+  "FBT001", # https://docs.astral.sh/ruff/rules/boolean-type-hint-positional-argument/
+  "FBT002", # https://docs.astral.sh/ruff/rules/boolean-default-value-positional-argument/
 ]
 
 [tool.ruff.lint.pydocstyle]
