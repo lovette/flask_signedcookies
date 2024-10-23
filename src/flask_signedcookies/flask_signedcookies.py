@@ -52,7 +52,7 @@ class SignedCookies:
         self._session_interface = session_interface or app.session_interface
 
         assert isinstance(self._session_interface, SessionInterface)
-        assert hasattr(self._session_interface, 'get_signing_serializer')
+        assert hasattr(self._session_interface, "get_signing_serializer")
 
         # Hook into request startup and teardown
         app.before_request(self.reset_cookies)
@@ -83,19 +83,20 @@ class SignedCookies:
         """
         # Set signed cookies
         for cookie_name, cookie in self._set_signed_cookies.iteritems():
-            signed_val = self.get_signing_serializer().dumps(cookie['unsigned_val'])
-            response.set_cookie(self._hash_name(cookie_name), signed_val,
-                                max_age=cookie['max_age'],
-                                path=cookie['path'],
-                                domain=cookie['domain'],
-                                httponly=cookie['httponly'],
-                                secure=cookie['secure'])
+            signed_val = self.get_signing_serializer().dumps(cookie["unsigned_val"])
+            response.set_cookie(
+                self._hash_name(cookie_name),
+                signed_val,
+                max_age=cookie["max_age"],
+                path=cookie["path"],
+                domain=cookie["domain"],
+                httponly=cookie["httponly"],
+                secure=cookie["secure"],
+            )
 
         # Delete signed cookies
         for cookie_name, cookie in self._del_signed_cookies.iteritems():
-            response.delete_cookie(self._hash_name(cookie_name),
-                                   path=cookie['path'],
-                                   domain=cookie['domain'])
+            response.delete_cookie(self._hash_name(cookie_name), path=cookie["path"], domain=cookie["domain"])
 
         # Make safe to call save_cookies again, just in case
         self.reset_cookies()
@@ -160,13 +161,13 @@ class SignedCookies:
         self._get_signed_cookies[cookie_name] = unsigned_val
         self._del_signed_cookies.pop(cookie_name, None)
         self._set_signed_cookies[cookie_name] = {
-            'unsigned_val': unsigned_val,
-            'max_age': max_age,
-            'path': self.get_cookie_path() if path is None else path,
-            'domain': self.get_cookie_domain() if domain is None else domain,
-            'httponly': self.get_cookie_httponly() if httponly is None else httponly,
-            'secure': self.get_cookie_secure() if secure is None else secure,
-            }
+            "unsigned_val": unsigned_val,
+            "max_age": max_age,
+            "path": self.get_cookie_path() if path is None else path,
+            "domain": self.get_cookie_domain() if domain is None else domain,
+            "httponly": self.get_cookie_httponly() if httponly is None else httponly,
+            "secure": self.get_cookie_secure() if secure is None else secure,
+        }
 
     def delete_cookie(self, cookie_name: str, path: str = "/", domain: str | None = None) -> None:
         """Delete a signed cookie.
@@ -183,9 +184,9 @@ class SignedCookies:
         self._get_signed_cookies[cookie_name] = None
         self._set_signed_cookies.pop(cookie_name, None)
         self._del_signed_cookies[cookie_name] = {
-            'path': self.get_cookie_path() if path is None else path,
-            'domain': self.get_cookie_domain() if domain is None else domain,
-            }
+            "path": self.get_cookie_path() if path is None else path,
+            "domain": self.get_cookie_domain() if domain is None else domain,
+        }
 
     def get_cookie_path(self) -> str:
         """Return default cookie ``path``.
