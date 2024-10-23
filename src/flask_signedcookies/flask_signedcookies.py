@@ -98,7 +98,7 @@ class SignedCookies:
         for cookie_name, cookie in self._set_signed_cookies.items():
             signed_val = self.get_signing_serializer().dumps(cookie["unsigned_val"])
             response.set_cookie(
-                self._hash_name(cookie_name),
+                self.hash_name(cookie_name),
                 signed_val,
                 max_age=cookie["max_age"],
                 path=cookie["path"],
@@ -109,7 +109,7 @@ class SignedCookies:
 
         # Delete signed cookies
         for cookie_name, cookie in self._del_signed_cookies.items():
-            response.delete_cookie(self._hash_name(cookie_name), path=cookie["path"], domain=cookie["domain"])
+            response.delete_cookie(self.hash_name(cookie_name), path=cookie["path"], domain=cookie["domain"])
 
         # Make safe to call save_cookies again, just in case
         self.reset_cookies()
@@ -132,7 +132,7 @@ class SignedCookies:
         if cookie_name not in self._get_signed_cookies:
             unsigned_val = None
 
-            signed_val = request.cookies.get(self._hash_name(cookie_name))
+            signed_val = request.cookies.get(self.hash_name(cookie_name))
             if signed_val is not None:
                 try:
                     if isinstance(max_age, datetime.timedelta):
@@ -242,7 +242,7 @@ class SignedCookies:
         """
         return self._session_interface.get_signing_serializer(self._app)
 
-    def _hash_name(self, name: str) -> str:
+    def hash_name(self, name: str) -> str:
         """Hash cookie name with ``name_hash_method``.
 
         Args:
@@ -252,5 +252,6 @@ class SignedCookies:
             str
         """
         if self.name_hash_method is not None:
-            return self.name_hash_method(self._session_interface.salt + name).hexdigest()
+            salty_name = (self._session_interface.salt + name).encode()  # bytes
+            return self.name_hash_method(salty_name).hexdigest()
         return name
