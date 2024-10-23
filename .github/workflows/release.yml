@@ -1,4 +1,7 @@
-name: Release
+# Run unit tests and packages a release if all tests pass.
+# https://github.com/lovette/flask_signedcookies/releases
+
+name: Test and package release
 
 on:
   # Allow triggering manually from GitHub UI.
@@ -16,7 +19,11 @@ on:
       - "v[0-9]+.[0-9]+.[0-9]+-*"
 
 jobs:
-  build:
+  pytest:
+    uses: ./.github/workflows/pytest.yml
+
+  release:
+    needs: [pytest]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout

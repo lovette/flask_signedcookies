@@ -1,0 +1,46 @@
+# Runs unit tests with a matrix of Python versions.
+
+name: Python unit tests
+
+on:
+  # Allow triggering manually from GitHub UI.
+  workflow_dispatch:
+
+  # Allow triggering from other workflows.
+  workflow_call:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.9", "3.10", "3.11", "3.12", "3.13"]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Display Python version
+        run: python -c "import sys; print(sys.version)"
+
+      - name: Create virtualenv
+        run: make virtualenv
+
+      - name: Generate requirements.txt
+        run: |
+          source "$HOME"/.virtualenvs/flask_signedcookies/bin/activate
+          make requirements
+
+      - name: Install requirements
+        run: |
+          source "$HOME"/.virtualenvs/flask_signedcookies/bin/activate
+          make install-dev
+
+      - name: Run tests
+        run: |
+          source "$HOME"/.virtualenvs/flask_signedcookies/bin/activate
+          pytest --cache-clear
