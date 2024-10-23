@@ -95,7 +95,7 @@ class SignedCookies:
             Response
         """
         # Set signed cookies
-        for cookie_name, cookie in self._set_signed_cookies.iteritems():
+        for cookie_name, cookie in self._set_signed_cookies.items():
             signed_val = self.get_signing_serializer().dumps(cookie["unsigned_val"])
             response.set_cookie(
                 self._hash_name(cookie_name),
@@ -108,7 +108,7 @@ class SignedCookies:
             )
 
         # Delete signed cookies
-        for cookie_name, cookie in self._del_signed_cookies.iteritems():
+        for cookie_name, cookie in self._del_signed_cookies.items():
             response.delete_cookie(self._hash_name(cookie_name), path=cookie["path"], domain=cookie["domain"])
 
         # Make safe to call save_cookies again, just in case
