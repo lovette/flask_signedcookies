@@ -1,3 +1,9 @@
+"""Flask extension that provides easy access to signed cookies.
+
+This module provides:
+- SignedCookies
+"""
+
 import datetime
 import hashlib
 
