@@ -77,7 +77,7 @@ ruffcheck:  ## Run Ruff on project files
 ifndef VIRTUAL_ENV
 	$(ERROR_NO_VIRTUALENV)
 endif
-	ruff check src
+	ruff check src tests
 
 .PHONY: ruffclean
 ruffclean:  ## Clear Ruff caches
@@ -100,7 +100,14 @@ endif
 .PHONY: distclean
 distclean:  ## Delete build files, python cache and package build artifacts
 	rm -f requirements.txt requirements-dev.txt
-	rm -rf build dist .ruff_cache
+	rm -rf build dist .ruff_cache .pytest_cache
 	find . -type d -name __pycache__ -print -exec rm -rf {} +
 	find . -type d -name '*.egg-info' -print -exec rm -rf {} +
 	find . -type f -name '*.pyc' -delete
+
+############################
+##@ Test
+
+.PHONY: tests
+tests:  ## Run unit tests
+	pytest
