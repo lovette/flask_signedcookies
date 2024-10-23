@@ -10,10 +10,12 @@ import datetime
 import hashlib
 from typing import TYPE_CHECKING
 
-from flask.sessions import SessionInterface, total_seconds
+from flask.sessions import SessionInterface
 from itsdangerous import BadSignature
 
 if TYPE_CHECKING:
+    from datetime import timedelta
+
     from flask import Flask, Request, Response
     from itsdangerous.url_safe import Serializer
 
@@ -105,7 +107,7 @@ class SignedCookies:
 
         return response
 
-    def get_cookie(self, request: Request, cookie_name: str, max_age: int | None = None) -> str:
+    def get_cookie(self, request: Request, cookie_name: str, max_age: int | timedelta | None = None) -> str:
         """Get value of a signed cookie.
 
         Arguments:
@@ -125,7 +127,7 @@ class SignedCookies:
             if signed_val is not None:
                 try:
                     if isinstance(max_age, datetime.timedelta):
-                        max_age = total_seconds(max_age)
+                        max_age = int(max_age.total_seconds()) or None
                     unsigned_val = self.get_signing_serializer().loads(signed_val, max_age=max_age)
                 except BadSignature:
                     pass
