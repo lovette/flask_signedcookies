@@ -48,12 +48,21 @@ class SignedCookies:
                 function named ``get_signing_serializer`` can be used (which the standard
                 ``SecureCookieSessionInterface`` does). Default is to use ``app.session_interface``.
             register_funcs (bool, optional): Register cookie functions for ``app``. Default is True.
+
+        Raises:
+            ValueError: Session or Redis instance has not been set.
+            TypeError: Session or Redis instance is not of correct type.
         """
         self._app = app
         self._session_interface = session_interface or app.session_interface
 
-        assert isinstance(self._session_interface, SessionInterface)
-        assert hasattr(self._session_interface, "get_signing_serializer")
+        if not isinstance(self._session_interface, SessionInterface):
+            errmsg = f"{self!r} session_interface instance is type <{self._session_interface.__class__.__name__}> expected type <SessionInterface>"
+            raise TypeError(errmsg)
+
+        if not hasattr(self._session_interface, "get_signing_serializer"):
+            errmsg = f"{self!r} session_interface instance does not have a 'get_signing_serializer' method"
+            raise ValueError(errmsg)
 
         # Hook into request startup and teardown
         app.before_request(self.reset_cookies)
